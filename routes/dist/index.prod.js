@@ -1,0 +1,1 @@
+"use strict";var express=require("express"),router=express.Router(),Tweets=require("../models/tweets");router.get("/",function(e,t){Tweets.find({},function(e,r){t.render("index",{tweets:r})})}),router.get("/login",function(e,r){r.render("login")}),router.get("/signup",function(e,r){r.render("signup")}),module.exports=router;
