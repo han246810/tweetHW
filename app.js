@@ -1,36 +1,66 @@
-//https://github.com/nax3t/webdevbootcamp/blob/master/IntroToExpress/FirstExpressApp/app.js
-var express = require('express');
-var app = express();
-var router = express.Router();
-let data = [{ "msg": "msg1" }, { "msg": "msg2" }, { "msg": "msg3" }];
+const express = require('express');
+const app = express();
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const path = require('path');
+const tweets = require('./tweets');
+const mongoose = require('mongoose');
 
-// define the home page route
-router.get('/', function (req, res) {
 
-	res.send('tweet home page');
+//connect to database                { useNewUrlParser: true }
+mongoose.connect('mongodb://localhost:127.0.0.1:27017/tweet', { useNewUrlParser: true }); //my local database is called tweet
+var db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'connection error:'));
+
+db.once('open', () => {
+    console.log("Connection Successful!");
+});
+db.once('close', () => {
+    console.log('Disconnection Successful!');
 });
 
-router.get('/tweets', function (req, res) {
 
-	res.json(data);
+
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(logger('dev'));
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+//app.use(express.static("public"));
+//app.use(express.static("./"));
+app.locals.moment = require('moment');  //The will allow you to use moment in pug.
+
+const index = require('./routes/index');
+const profile = require('./routes/profile');
+
+app.use('/', index);
+app.use('/profile', profile);
+
+
+
+
+
+app.use((req, res, next) => {
+    const err = new Error('Page Not Found');
+    err.status = 404; //200
+    next(err);
 });
 
-router.post('/tweet/new', function (req, res) {
-	console.log('Got body:', req.body);
-	res.json({ message: 'new tweet' });
+app.use((err, req, res, next) => {
+    res.send(err.message);
 });
 
 
-router.delete('/tweets/:id', function (req, res) {
-	console.log('delete: ', req.params.id);
-	res.status(200).send('Got a DELETE request at user:' + req.params.id);
-});
 
-// router.get("*", function (req, res) {
-// 	res.send("YOU ARE A STAR!!!");
-// });
-
-app.use('/', router);
-app.listen(3000, function () {
-	console.log("Live at Port 3000");
+app.listen(3000, () => {
+    console.log('Example app listening on port 3000!');
 });
