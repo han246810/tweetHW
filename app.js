@@ -1,66 +1,114 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const path = require('path');
-const tweets = require('./tweets');
 const mongoose = require('mongoose');
+const passport = require('passport');
+const session = require('express-session');
+const LocalStrategy = require('passport-local').Strategy;
+const Users = require('./models/users');
+const Tweets = require('./models/tweets');
 
+// connect mongoDB
+var username = `user`;
+var password = `test123`;
+// mongoose.connect(`mongodb+srv://${username}:${password}@hackhub-uvtkx.mongodb.net/webdxd?retryWrites=true&w=majority`, { useNewUrlParser: true });
 
-//connect to database                { useNewUrlParser: true }
-mongoose.connect('mongodb://localhost:127.0.0.1:27017/tweet', { useNewUrlParser: true }); //my local database is called tweet
+mongoose.connect('mongodb://localhost:27017/tweet', { useNewUrlParser: true });
 var db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', () => {
-    console.log("Connection Successful!");
-});
-db.once('close', () => {
-    console.log('Disconnection Successful!');
+  console.log("Connection Successful!");
 });
 
 
 
-
+// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(bodyParser.json());
+/**
+ * middleware
+ * note: middleware is running in sequence, from top to bottom
+ */
+app.use(bodyParser.json()); // parse client request data to json format
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(logger('dev'));
-
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(logger('dev')); // log requests in server console
+/**
+ * you need to use session middleware to create session store
+ * if you want to use passport session
+*/
+app.use(session({
+  secret: 'webdxd',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // only set this to true if you are in HTTPS connection
+}));
 
+app.use(passport.initialize());
+app.use(passport.session());
 
-//app.use(express.static("public"));
-//app.use(express.static("./"));
-app.locals.moment = require('moment');  //The will allow you to use moment in pug.
+// passport config
+require('./passport');
+/**
+ * set local variables, so you can use it in template engine
+ */
+app.locals.moment = require('moment');
 
-const index = require('./routes/index');
-const profile = require('./routes/profile');
-
-app.use('/', index);
-app.use('/profile', profile);
-
-
-
+/** custom middleware automatically adding user into templates */
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  next();
+});
 
 
 app.use((req, res, next) => {
-    const err = new Error('Page Not Found');
-    err.status = 404; //200
-    next(err);
+  Tweets.find({}, (err, tweets) => {
+    res.locals.tweets = tweets;
+    next();
+  })
 });
 
+
+
+// import routers
+const index = require('./routes/index');
+const profile = require('./routes/profile');
+
+// apply router middleware
+app.use('/', index);
+app.use('/profile', profile);
+
+// catch 404 and forward to error handler
+app.use((req, res, next) => {
+  const err = new Error('Page Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// error handler
 app.use((err, req, res, next) => {
-    res.send(err.message);
+  res.send(err.message);
 });
 
 
 
-app.listen(3000, () => {
-    console.log('Example app listening on port 3000!');
+
+
+/**
+ * Get port from environment and store in Express.
+ */
+const port = process.env.PORT || 3000;
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`)
 });

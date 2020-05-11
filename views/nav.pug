@@ -8,4 +8,9 @@ nav.nav-bar
         a(href="/") Home
     div
       a(href="/profile")
-        img.avatar-sm(src="/img/avatar.jpg" alt="avatar")
+        //- img.avatar-sm(src="/img/avatar.jpg" alt="avatar")  user.avatarUrl
+
+        if typeof user === 'undefined'
+            img.avatar-sm(src="/img/avatar.jpg" alt="avatar")
+        else 
+            img.avatar-sm(src= user.avatarUrl alt="avatar")
