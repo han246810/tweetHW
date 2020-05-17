@@ -1,0 +1,16 @@
+extends layout
+
+block content
+     .container
+        .row
+          img.avatar-sm(src=tweet.author.avatarUrl alt="avatar")
+          h4
+            b=tweet.author.name
+          h5=`@${tweet.author.username}`
+          h5=moment(tweet.createdAt).format('MMMM D, YYYY hh:mm A')
+        form(action='/profile/updateTweet' method="POST")
+            
+            textarea.input-profile(name="updtaeTweetContent") #{tweet.content}
+            input(type="hidden" name="tweetId" value=`${tweet._id}`)
+            button.btn-primary.space-top.updateTweet Save
+            a.btn-border.space-top(href="/profile") Cancel
