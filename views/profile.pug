@@ -36,29 +36,31 @@ block content
             //- button(type='button' class='editTweet') Edit Tweet
             //button(type='button' class='deleteTweet') Delete Tweet
             //- a.btn-border.space-top(href=`/profile/editTweet/?tweetId=${tweet._id}`) Edit Tweet
-            a.btn-border.space-top(href=`/profile/editTweet?tweetId=${tweet._id}`) Edit Tweet
-            a.btn-border.space-top.deleteTweet(href=`/profile/deleteTweet/?tweetId=${tweet._id}`) Delete Tweet
-            //- a.btn-border.space-top.deleteTweet Delete Tweet
+            a.fas.fa-edit.editTweet(href=`/profile/editTweet?tweetId=${tweet._id}`) 
+            //- a.btn-border.space-top.deleteTweet(href=`/profile/deleteTweet/?tweetId=${tweet._id}`) Delete Tweet
+            button.editTweet.fa.fa-trash(type='button'  onclick=`deleteConfirm("${tweet._id}")`) 
            
           p=tweet.content
             if (tweet.imageUrl)
               img(src=tweet.imageUrl alt="tweet")
 
-//- block script
-//-   script.
-//-     $('.deleteTweet').click(function() {
-//-         var txt;
-//-         var r = confirm("Confirm to delete tweet?");
-//-         if (r == true) {
-//-             //- alert("ok!");  /profile/editTweet?tweetId=${tweet._id}`  `/profile/deleteTweet?tweetId=${tweet._id}`
-//-             //- alert("ok!");
-//-             alert(tweet._id);
-//-             window.location.href = `/profile/deleteTweet?tweetId=${tweet._id}`;
-//-             //- window.location.href = `/profile`;
-//-             alert("ok!");
-//-         } else {
-//-             alert("You pressed Cancel!");
-//-         }
-//-             //- document.getElementById("demo").innerHTML = txt;
+block script
+  script.
+          //- function deleteConfirm(tweetId){
+          //-   alert(tweetId);
+          //- }
+       deleteConfirm =(tweetId)=>{
+        var txt;
+        var r = confirm("Confirm to delete tweet?");
+        if (r == true) {
+            //- alert("ok!");  /profile/editTweet?tweetId=${tweet._id}`  `/profile/deleteTweet?tweetId=${tweet._id}`
+            //- alert("ok!");
             
-//-     });
+            //- alert(tweetId);
+            window.location.href = `/profile/deleteTweet?tweetId=${tweetId}`;
+        } else {
+            alert("You pressed Cancel!");
+        }
+            //- document.getElementById("demo").innerHTML = txt;
+            
+    };

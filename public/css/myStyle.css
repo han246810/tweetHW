@@ -1,0 +1,16 @@
+/* button */
+.editTweet {
+  background-color: rgb(73, 79, 80);
+  border: none;
+  color: white;
+  padding: 1px 1px;
+  font-size: 20px;
+  cursor: pointer;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+/* Darker background on mouse-over */
+.editTweet:hover {
+  background-color: RoyalBlue;
+}
