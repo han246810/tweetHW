@@ -1,0 +1,55 @@
+.tweet {
+  border-top: 2px solid #f8f8f8;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.tweet:hover {
+  background-color: #fafafa;
+}
+
+.tweet p img {
+  width: 100%;
+  border-radius: 10px;
+  margin-top: 1rem;
+}
+
+.tweet p {
+  margin-top: 0;
+  margin-left: 3rem;
+}
+
+.avatar-sm,
+.tweet-avatar {
+  border-radius: 50%;
+  width: 2rem;
+  height: auto;
+}
+.input-tweet {
+  margin-left: 1rem;
+  border-color: #29c9de;
+}
+
+.input-tweet::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #29c9de;
+}
+
+.input-tweet:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #29c9de;
+}
+
+.input-tweet::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: #29c9de;
+}
+.tweet-actions {
+  margin-top: 10px;
+  margin-left: 3rem;
+  justify-content: space-between;
+}
+.tweet-del {
+  position: absolute;
+  right: 0;
+}

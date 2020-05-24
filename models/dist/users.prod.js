@@ -1,1 +1,0 @@
-"use strict";var mongoose=require("mongoose"),Schema=mongoose.Schema,UsersSchema=new Schema({name:{type:String,required:!0},username:{type:String,requried:!0},location:String,bio:String,avatarUrl:{type:String,default:"/img/webdxd.png"}}),Users=mongoose.model("Users",UsersSchema);module.exports=Users;
